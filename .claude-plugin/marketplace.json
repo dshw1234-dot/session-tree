@@ -1,0 +1,15 @@
+{
+  "name": "session-tree",
+  "description": "Session Tree, a Claude Code mod that shows your desktop sessions as a family tree.",
+  "owner": {
+    "name": "이원찬",
+    "url": "https://github.com/dshw1234-dot"
+  },
+  "plugins": [
+    {
+      "name": "session-tree",
+      "source": "./",
+      "description": "A side panel that shows your Claude desktop sessions as a family tree, grouped by folder."
+    }
+  ]
+}

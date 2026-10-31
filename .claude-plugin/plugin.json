@@ -1,0 +1,14 @@
+{
+  "name": "session-tree",
+  "displayName": "Session Tree",
+  "version": "0.2.0",
+  "description": "A side panel that shows your Claude desktop sessions as a family tree, grouped by folder.",
+  "author": {
+    "name": "이원찬",
+    "url": "https://github.com/dshw1234-dot"
+  },
+  "homepage": "https://github.com/dshw1234-dot/session-tree",
+  "repository": "https://github.com/dshw1234-dot/session-tree",
+  "license": "MIT",
+  "types": "./types/index.d.ts"
+}
