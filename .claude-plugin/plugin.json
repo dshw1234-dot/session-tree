@@ -10,5 +10,8 @@
   "homepage": "https://github.com/dshw1234-dot/session-tree",
   "repository": "https://github.com/dshw1234-dot/session-tree",
   "license": "MIT",
+  "privacyPolicyUrl": "https://github.com/dshw1234-dot/session-tree#what-it-reads-and-sends",
+  "supportUrl": "https://github.com/dshw1234-dot/session-tree/issues",
+  "documentationUrl": "https://github.com/dshw1234-dot/session-tree#readme",
   "types": "./types/index.d.ts"
 }

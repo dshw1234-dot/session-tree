@@ -44,9 +44,30 @@ Drawing the panel, refreshing it and pressing its buttons make no model calls. T
 
 ## What it reads and sends
 
-- It reads the session files the desktop app keeps on your computer, and each project's `.git/config` for its repository name.
-- It calls the `ListAgents` and `list_sessions` tools for cloud sessions and running status, but only when they are already allowed, so it never opens a permission prompt.
-- Once per session, while the panel is open, it requests this repository's `plugin.json` from `raw.githubusercontent.com` to check for a new version. It sends none of your data.
+This section is also the mod's privacy policy.
+
+**Reads.** The session files the desktop app keeps on your computer (titles, folders, parent links, dates) and each project's `.git/config` for its repository name. Session titles and folder paths can contain personal details such as your name.
+
+**Stores.** Only your settings, on your computer: language, whether archived sessions are shown, and which folders are collapsed (kept as folder paths). The mod has no server and keeps no other copy of your data.
+
+**Sends.** None of your data. The only network request is one GET per session, while the panel is open, to this fixed address, to check for a new version:
+
+`https://raw.githubusercontent.com/dshw1234-dot/session-tree/main/.claude-plugin/plugin.json`
+
+The mod uses only the `version` field of the answer. It never runs anything it downloads. GitHub receives the request like any other web request, including your IP address.
+
+**Tools it calls by itself.** While the panel is open, about once a minute, without the model asking, and only if your permission settings already allow them, so that it never opens a permission prompt:
+
+- `ListAgents`, for the titles of cloud sessions.
+- `mcp__ccd_session_mgmt__list_sessions`, for which sessions are running.
+
+If either tool isn't allowed, the mod skips it and that information doesn't appear. The answers stay in the panel. They aren't sent anywhere and they don't enter the conversation.
+
+**Programs it starts.** Only when you click a session card, to open that session in the app: `rundll32 url.dll,FileProtocolHandler` on Windows, `open` on macOS, or `xdg-open` on Linux. The only argument is `claude://claude.ai/epitaxy/<session id>`, and the id must be a local session id made of letters, digits and hyphens. The mod starts no other program.
+
+**Hooks.** `session.start` registers the command and restores your settings. `command.run` answers `/session-tree` by opening the panel. `ui.render` draws the panel. The mod doesn't change your prompts, the model's instructions or other tool calls.
+
+Questions and problem reports go to [Issues](https://github.com/dshw1234-dot/session-tree/issues).
 
 ## Limitations
 
