@@ -177,7 +177,11 @@ test('입력창 위 아이콘으로 패널을 열고 닫는다', async ($, on) =
   on('fs.list', () => ({ value: [] }))
   on('tool.check', () => ({ decision: 'deny' as const }))
   // 터미널에서는 아이콘을 그리지 않고 아래로 넘긴다
-  on('ui.render', () => null as never)
+  on('ui.render', ($$, e) => {
+    const { Text } = $$.ui.resolve(e)
+
+    return <Text>아래</Text>
+  })
 
   const ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
   await ui.press({ key: 'toggle-pane' })
