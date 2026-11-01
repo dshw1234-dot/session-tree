@@ -34,6 +34,7 @@ declare module 'claude-code' {
       collapsed: string[]
       note: string | null
       showArchived: boolean
+      isIconHidden: boolean
       archivedCount: number
       lang: Lang
       isSettingsOpen: boolean

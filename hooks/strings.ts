@@ -5,12 +5,15 @@ type Strings = {
   commandDescription: string
   togglePane: string
   opened: string
+  closed: string
   settings: string
   otherLanguage: string
   refresh: string
   autoRefresh: string
   showArchived: (count: number) => string
   hideArchived: string
+  showIcon: string
+  hideIcon: string
   search: string
   noMatch: string
   running: string
@@ -30,15 +33,18 @@ type Strings = {
 export const STRINGS: Record<Lang, Strings> = {
   ko: {
     title: '세션 가계도',
-    commandDescription: '세션 가계도 패널을 엽니다',
+    commandDescription: '세션 가계도 패널을 열거나 닫습니다',
     togglePane: '세션 가계도 열기 또는 닫기',
     opened: '세션 가계도 패널을 열었습니다.',
+    closed: '세션 가계도 패널을 닫았습니다.',
     settings: '설정',
     otherLanguage: 'English',
     refresh: '새로 고침',
     autoRefresh: '1분마다 자동으로 새로 고칩니다',
     showArchived: count => `보관 세션 보기 (${count})`,
     hideArchived: '보관 세션 숨기기',
+    showIcon: '입력창 위 아이콘 보이기',
+    hideIcon: '입력창 위 아이콘 숨기기',
     search: '세션 검색',
     noMatch: '검색 결과가 없습니다.',
     running: '실행 중',
@@ -57,15 +63,18 @@ export const STRINGS: Record<Lang, Strings> = {
   },
   en: {
     title: 'Session tree',
-    commandDescription: 'Open the session tree panel',
+    commandDescription: 'Open or close the session tree panel',
     togglePane: 'Open or close the session tree',
     opened: 'Opened the session tree panel.',
+    closed: 'Closed the session tree panel.',
     settings: 'Settings',
     otherLanguage: '한국어',
     refresh: 'Refresh',
     autoRefresh: 'Refreshes automatically every minute',
     showArchived: count => `Show archived (${count})`,
     hideArchived: 'Hide archived',
+    showIcon: 'Show icon above the prompt',
+    hideIcon: 'Hide icon above the prompt',
     search: 'Search sessions',
     noMatch: 'No matching sessions.',
     running: 'running',

@@ -25,6 +25,7 @@ const NOTE_NO_MATCH = 'no-match'
 const REFRESH_MS = 60_000
 const COLLAPSED_KEY = 'collapsed'
 const SHOW_ARCHIVED_KEY = 'showArchived'
+const HIDE_ICON_KEY = 'hideIcon'
 const LANG_KEY = 'lang'
 const GEAR = '⚙'
 const PANEL_ICON = '◨'
@@ -60,6 +61,10 @@ const isSettingsOpen = atom(
 )
 const showArchived = atom(
   { plugin: 'session-tree', key: 'showArchived' } as const,
+  false as boolean,
+)
+const isIconHidden = atom(
+  { plugin: 'session-tree', key: 'isIconHidden' } as const,
   false as boolean,
 )
 const archivedCount = atom(
@@ -309,6 +314,9 @@ async function start($: EngineInterface) {
   if ((await $.store.get(SHOW_ARCHIVED_KEY)) === true) {
     await update($, showArchived, () => true)
   }
+  if ((await $.store.get(HIDE_ICON_KEY)) === true) {
+    await update($, isIconHidden, () => true)
+  }
   await refreshIfOpen($)
   $.clock.every(REFRESH_MS, () => void refreshIfOpen($))
 }
@@ -327,6 +335,12 @@ async function toggleArchived($: EngineInterface) {
   await rebuild($)
 }
 
+async function toggleIcon($: EngineInterface) {
+  const next = !(await read($, isIconHidden))
+  await update($, isIconHidden, () => next)
+  await $.store.set(HIDE_ICON_KEY, next)
+}
+
 async function toggleLang($: EngineInterface) {
   const next: Lang = (await read($, lang)) === 'ko' ? 'en' : 'ko'
   await update($, lang, () => next)
@@ -339,15 +353,18 @@ async function toggleSettings($: EngineInterface) {
   await update($, isSettingsOpen, () => next)
 }
 
-async function togglePane($: EngineInterface) {
-  const panes = await $.ui.panes()
-  if (panes.some(pane => pane.id === PANE)) {
-    await $.ui.close({ id: PANE })
-
-    return
-  }
+async function openPane($: EngineInterface) {
   await $.ui.open({ id: PANE, title: STRINGS[await read($, lang)].title })
   await refresh($)
+}
+
+// 패널이 열려 있으면 닫고 true를 돌려준다
+async function closeIfOpen($: EngineInterface) {
+  const panes = await $.ui.panes()
+  if (!panes.some(pane => pane.id === PANE)) return false
+  await $.ui.close({ id: PANE })
+
+  return true
 }
 
 async function setQuery($: EngineInterface, value: string) {
@@ -377,15 +394,17 @@ export const register: Register = on => {
     // `/session-tree demo`는 실제 세션 대신 예시 데이터를 보여 준다 (스크린샷용)
     isDemo = e.args.trim() === 'demo'
     const t = STRINGS[await read($, lang)]
-    await $.ui.open({ id: PANE, title: t.title })
-    await refresh($)
+    if (!isDemo && (await closeIfOpen($))) return { text: t.closed }
+    await openPane($)
 
     return { text: t.opened }
   })
 
   // 데스크톱 입력창 위 오른쪽 끝의 흐린 아이콘. 터미널에는 그리지 않는다.
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    if (e.surface !== 'desktop' || e.props.hasSurvey) return next(e)
+    const isQuiet =
+      e.surface !== 'desktop' || e.props.hasSurvey || (await read($, isIconHidden))
+    if (isQuiet) return next(e)
     const { Box, Button } = $.ui.resolve(e)
     const t = STRINGS[await read($, lang)]
 
@@ -396,7 +415,9 @@ export const register: Register = on => {
           label={t.togglePane}
           plain
           dimColor
-          onPress={() => togglePane($)}
+          onPress={async () => {
+            if (!(await closeIfOpen($))) await openPane($)
+          }}
         >
           {PANEL_ICON}
         </Button>
@@ -414,6 +435,7 @@ export const register: Register = on => {
     const message = await read($, note)
     const isShowingArchived = await read($, showArchived)
     const archived = await read($, archivedCount)
+    const isHidingIcon = await read($, isIconHidden)
     const isOpen = await read($, isSettingsOpen)
     const query = await read($, searchQuery)
     const latest = await read($, latestVersion)
@@ -548,6 +570,11 @@ export const register: Register = on => {
                 key="archived"
                 label={isShowingArchived ? t.hideArchived : t.showArchived(archived)}
                 onPress={() => toggleArchived($)}
+              />
+              <Button
+                key="icon"
+                label={isHidingIcon ? t.showIcon : t.hideIcon}
+                onPress={() => toggleIcon($)}
               />
             </Box>
             <Text dimColor>{t.autoRefresh}</Text>

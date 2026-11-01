@@ -160,7 +160,7 @@ const BAND = {
 test('입력창 위 아이콘으로 패널을 열고 닫는다', async ($, on) => {
   const open: string[] = []
   on('ui.open', (_, e) => {
-    open.push(e.id)
+    if (!open.includes(e.id)) open.push(e.id)
 
     return { value: { isPlaced: true } }
   })
@@ -176,6 +176,9 @@ test('입력창 위 아이콘으로 패널을 열고 닫는다', async ($, on) =
   on('session.id', () => ({ value: 'cli-a' }))
   on('fs.list', () => ({ value: [] }))
   on('tool.check', () => ({ decision: 'deny' as const }))
+  on('command.register', () => ({ value: { command: 'session-tree' } }))
+  on('clock.every', () => ({ value: undefined }))
+  on('store.get', () => ({ value: undefined }))
   // 터미널에서는 아이콘을 그리지 않고 아래로 넘긴다
   on('ui.render', ($$, e) => {
     const { Text } = $$.ui.resolve(e)
@@ -193,4 +196,42 @@ test('입력창 위 아이콘으로 패널을 열고 닫는다', async ($, on) =
   const terminal = await $.ui.mount({ ...BAND, surface: 'terminal' })
   expect(await terminal.find({ type: 'Button' })).toBeFalsy()
   await terminal.unmount()
+
+  // 같은 명령을 다시 입력하면 닫히고, 예시 화면은 열린 패널을 닫지 않는다
+  await $.command.run({ command: 'session-tree', args: '' } as never)
+  expect(open).toEqual(['session-tree'])
+  await $.command.run({ command: 'session-tree', args: 'demo' } as never)
+  expect(open).toContain('session-tree')
+  await $.command.run({ command: 'session-tree', args: '' } as never)
+  expect(open).toEqual([])
+})
+
+test('설정에서 입력창 위 아이콘을 숨기고 그 값을 저장한다', async ($, on) => {
+  const stored: unknown[] = []
+  on('ui.render', ($$, e) => {
+    const { Text } = $$.ui.resolve(e)
+
+    return <Text>아래</Text>
+  })
+  on('store.get', () => ({ value: undefined }))
+  on('store.set', (_, e) => {
+    stored.push(e.value)
+
+    return { value: undefined }
+  })
+
+  const band = await $.ui.mount({ ...BAND, surface: 'desktop' })
+  expect(await band.find({ type: 'Button' })).toBeTruthy()
+
+  const pane = await $.ui.mount({ ...PANE, surface: 'desktop' })
+  await pane.press({ key: 'settings' })
+  await pane.press({ key: 'icon' })
+  expect(stored.at(-1)).toBe(true)
+  expect(await band.find({ type: 'Button' })).toBeFalsy()
+
+  await pane.press({ key: 'icon' })
+  expect(stored.at(-1)).toBe(false)
+  expect(await band.find({ type: 'Button' })).toBeTruthy()
+  await pane.unmount()
+  await band.unmount()
 })
