@@ -3,6 +3,7 @@ import type { Badge, Lang } from '../types'
 type Strings = {
   title: string
   commandDescription: string
+  togglePane: string
   opened: string
   settings: string
   otherLanguage: string
@@ -30,6 +31,7 @@ export const STRINGS: Record<Lang, Strings> = {
   ko: {
     title: '세션 가계도',
     commandDescription: '세션 가계도 패널을 엽니다',
+    togglePane: '세션 가계도 열기 또는 닫기',
     opened: '세션 가계도 패널을 열었습니다.',
     settings: '설정',
     otherLanguage: 'English',
@@ -56,6 +58,7 @@ export const STRINGS: Record<Lang, Strings> = {
   en: {
     title: 'Session tree',
     commandDescription: 'Open the session tree panel',
+    togglePane: 'Open or close the session tree',
     opened: 'Opened the session tree panel.',
     settings: 'Settings',
     otherLanguage: '한국어',

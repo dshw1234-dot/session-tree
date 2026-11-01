@@ -142,3 +142,51 @@ test('세션 파일을 읽어 그리고, 누르면 그 세션을 연다', async 
   expect(await ui.find({ type: 'Text', text: /자식/ })).toBeTruthy()
   await ui.unmount()
 })
+
+const BAND = {
+  plugin: 'session-tree',
+  component: 'AbovePrompt',
+  requestId: 'band',
+  props: {
+    hasSurvey: false,
+    isWorking: false,
+    maxRows: 10,
+    bodyColumns: 80,
+    scroll: { offset: 0, bodyRows: 10 },
+    view: {},
+  },
+} as const
+
+test('입력창 위 아이콘으로 패널을 열고 닫는다', async ($, on) => {
+  const open: string[] = []
+  on('ui.open', (_, e) => {
+    open.push(e.id)
+
+    return { value: { isPlaced: true } }
+  })
+  on('ui.close', (_, e) => {
+    open.splice(open.indexOf(e.id), 1)
+
+    return { value: undefined }
+  })
+  on('ui.panes', () => ({
+    value: open.map(id => ({ id, title: id, isShown: true, isFocused: false, isPlaced: true })),
+  }))
+  on('env.get', () => ({ value: 'C:\AD' }))
+  on('session.id', () => ({ value: 'cli-a' }))
+  on('fs.list', () => ({ value: [] }))
+  on('tool.check', () => ({ decision: 'deny' as const }))
+  // 터미널에서는 아이콘을 그리지 않고 아래로 넘긴다
+  on('ui.render', () => null as never)
+
+  const ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+  await ui.press({ key: 'toggle-pane' })
+  expect(open).toEqual(['session-tree'])
+  await ui.press({ key: 'toggle-pane' })
+  expect(open).toEqual([])
+  await ui.unmount()
+
+  const terminal = await $.ui.mount({ ...BAND, surface: 'terminal' })
+  expect(await terminal.find({ type: 'Button' })).toBeFalsy()
+  await terminal.unmount()
+})

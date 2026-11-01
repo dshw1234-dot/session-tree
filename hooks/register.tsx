@@ -27,6 +27,7 @@ const COLLAPSED_KEY = 'collapsed'
 const SHOW_ARCHIVED_KEY = 'showArchived'
 const LANG_KEY = 'lang'
 const GEAR = '⚙'
+const PANEL_ICON = '◨'
 const NOTE_LOADING = 'loading'
 const NOTE_EMPTY = 'empty'
 
@@ -338,6 +339,17 @@ async function toggleSettings($: EngineInterface) {
   await update($, isSettingsOpen, () => next)
 }
 
+async function togglePane($: EngineInterface) {
+  const panes = await $.ui.panes()
+  if (panes.some(pane => pane.id === PANE)) {
+    await $.ui.close({ id: PANE })
+
+    return
+  }
+  await $.ui.open({ id: PANE, title: STRINGS[await read($, lang)].title })
+  await refresh($)
+}
+
 async function setQuery($: EngineInterface, value: string) {
   await update($, searchQuery, () => value)
   await rebuild($)
@@ -369,6 +381,27 @@ export const register: Register = on => {
     await refresh($)
 
     return { text: t.opened }
+  })
+
+  // 데스크톱 입력창 위 오른쪽 끝의 흐린 아이콘. 터미널에는 그리지 않는다.
+  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
+    if (e.surface !== 'desktop' || e.props.hasSurvey) return next(e)
+    const { Box, Button } = $.ui.resolve(e)
+    const t = STRINGS[await read($, lang)]
+
+    return (
+      <Box flexDirection="row" justifyContent="flex-end">
+        <Button
+          key="toggle-pane"
+          label={t.togglePane}
+          plain
+          dimColor
+          onPress={() => togglePane($)}
+        >
+          {PANEL_ICON}
+        </Button>
+      </Box>
+    )
   })
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {

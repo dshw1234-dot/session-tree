@@ -18,6 +18,7 @@ A side panel for the Claude desktop app that shows which session started which. 
 - **Archived sessions:** hidden by default, with a button to show them.
 - **Click to open:** click a card to open that session in the app.
 - **Korean and English:** your choice is remembered.
+- **Quick toggle:** a faint icon at the right end above the prompt opens and closes the panel.
 
 It refreshes by itself every minute while the panel is open.
 
@@ -30,7 +31,7 @@ claude plugin marketplace add dshw1234-dot/session-tree
 claude plugin install session-tree@session-tree --scope user
 ```
 
-Start a new session and type `/session-tree`. The ⚙ button at the top right opens the settings.
+Start a new session and type `/session-tree`. After that, the faint ◨ icon above the prompt opens and closes the panel too. The ⚙ button at the top right of the panel opens the settings.
 
 To get updates automatically, turn on auto-update for this marketplace under **Marketplaces** in `/plugin` in a terminal. To update by hand:
 
@@ -65,7 +66,7 @@ If either tool isn't allowed, the mod skips it and that information doesn't appe
 
 **Programs it starts.** Only when you click a session card, to open that session in the app: `rundll32 url.dll,FileProtocolHandler` on Windows, `open` on macOS, or `xdg-open` on Linux. The only argument is `claude://claude.ai/epitaxy/<session id>`, and the id must be a local session id made of letters, digits and hyphens. The mod starts no other program.
 
-**Hooks.** `session.start` registers the command and restores your settings. `command.run` answers `/session-tree` by opening the panel. `ui.render` draws the panel. The mod doesn't change your prompts, the model's instructions or other tool calls.
+**Hooks.** `session.start` registers the command and restores your settings. `command.run` answers `/session-tree` by opening the panel. `ui.render` draws the panel and the icon above the prompt. The mod doesn't change your prompts, the model's instructions or other tool calls.
 
 Questions and problem reports go to [Issues](https://github.com/dshw1234-dot/session-tree/issues).
 
