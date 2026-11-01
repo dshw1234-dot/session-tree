@@ -33,6 +33,10 @@ claude plugin install session-tree@session-tree --scope user
 
 Start a new session and type `/session-tree`. Type it again to close the panel. The faint icon under the prompt does the same: ◨ opens the panel and □ closes it. The ⚙ button at the top right of the panel opens the settings.
 
+![The panel icon in the status row under the prompt](docs/icon.png)
+
+![The settings box in the panel](docs/settings.png)
+
 To get updates automatically, turn on auto-update for this marketplace under **Marketplaces** in `/plugin` in a terminal. To update by hand:
 
 ```bash

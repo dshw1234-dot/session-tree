@@ -33,6 +33,10 @@ claude plugin install session-tree@session-tree --scope user
 
 새 세션을 열고 `/session-tree`를 입력합니다. 다시 입력하면 패널이 닫힙니다. 입력창 아래의 흐린 아이콘도 같은 일을 합니다. ◨은 패널을 열고 □은 닫습니다. 패널 오른쪽 위 ⚙ 버튼을 누르면 설정이 열립니다.
 
+![입력창 아래 상태 줄의 패널 아이콘](docs/icon.png)
+
+![패널의 설정 상자](docs/settings.png)
+
 자동 업데이트를 쓰려면 터미널의 `/plugin`에서 **Marketplaces** 항목으로 들어가 이 마켓플레이스의 자동 업데이트를 켭니다. 직접 업데이트하려면 다음을 실행합니다.
 
 ```bash
