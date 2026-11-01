@@ -35,6 +35,7 @@ declare module 'claude-code' {
       note: string | null
       showArchived: boolean
       isIconHidden: boolean
+      isPaneOpen: boolean
       archivedCount: number
       lang: Lang
       isSettingsOpen: boolean

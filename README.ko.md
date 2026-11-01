@@ -17,7 +17,7 @@ Claude 데스크톱 앱에서 어떤 세션이 어떤 세션을 시작했는지 
 - **검색:** 제목으로 찾습니다. 찾은 세션은 부모 아래 제자리에 그대로 나옵니다.
 - **보관 세션:** 기본으로 숨기고, 버튼으로 볼 수 있습니다.
 - **눌러서 열기:** 카드를 누르면 앱에서 그 세션을 엽니다.
-- **간편 여닫기:** 입력창 위 오른쪽 끝의 흐린 아이콘이나 `/session-tree`로 패널을 열고 닫습니다. 아이콘은 설정에서 숨길 수 있습니다.
+- **간편 여닫기:** 입력창 아래의 흐린 아이콘이나 `/session-tree`로 패널을 열고 닫습니다. 아이콘은 설정에서 숨길 수 있습니다.
 - **한국어와 영어:** 고른 언어를 기억합니다.
 
 패널이 열려 있으면 1분마다 스스로 새로 고칩니다.
@@ -31,7 +31,7 @@ claude plugin marketplace add dshw1234-dot/session-tree
 claude plugin install session-tree@session-tree --scope user
 ```
 
-새 세션을 열고 `/session-tree`를 입력합니다. 다시 입력하면 패널이 닫힙니다. 입력창 위의 흐린 ◨ 아이콘도 같은 일을 합니다. 패널 오른쪽 위 ⚙ 버튼을 누르면 설정이 열립니다.
+새 세션을 열고 `/session-tree`를 입력합니다. 다시 입력하면 패널이 닫힙니다. 입력창 아래의 흐린 아이콘도 같은 일을 합니다. ◨은 패널을 열고 □은 닫습니다. 패널 오른쪽 위 ⚙ 버튼을 누르면 설정이 열립니다.
 
 자동 업데이트를 쓰려면 터미널의 `/plugin`에서 **Marketplaces** 항목으로 들어가 이 마켓플레이스의 자동 업데이트를 켭니다. 직접 업데이트하려면 다음을 실행합니다.
 
@@ -66,7 +66,7 @@ claude plugin update session-tree@session-tree
 
 **실행하는 프로그램.** 세션 카드를 눌렀을 때 그 세션을 앱에서 열기 위해서만 실행합니다. Windows는 `rundll32 url.dll,FileProtocolHandler`, macOS는 `open`, Linux는 `xdg-open`입니다. 인수는 `claude://claude.ai/epitaxy/<세션 id>` 하나이고, id는 영문자, 숫자, 하이픈으로 된 로컬 세션 id여야 합니다. 그 밖의 프로그램은 실행하지 않습니다.
 
-**훅.** `session.start`는 명령을 등록하고 설정을 복원합니다. `command.run`은 `/session-tree`에 답해 패널을 열거나 닫습니다. `ui.render`는 패널과 입력창 위 아이콘을 그립니다. 프롬프트, 모델 지침, 다른 도구 호출은 바꾸지 않습니다.
+**훅.** `session.start`는 명령을 등록하고 설정을 복원합니다. `command.run`은 `/session-tree`에 답해 패널을 열거나 닫습니다. `ui.close`는 패널을 닫을 때 아이콘 모양을 맞춥니다. `ui.render`는 패널과 입력창 아래 아이콘을 그립니다. 프롬프트, 모델 지침, 다른 도구 호출은 바꾸지 않습니다.
 
 문의와 문제 제보는 [Issues](https://github.com/dshw1234-dot/session-tree/issues)로 보내 주세요.
 

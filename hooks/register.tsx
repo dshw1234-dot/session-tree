@@ -28,7 +28,8 @@ const SHOW_ARCHIVED_KEY = 'showArchived'
 const HIDE_ICON_KEY = 'hideIcon'
 const LANG_KEY = 'lang'
 const GEAR = '⚙'
-const PANEL_ICON = '◨'
+const OPEN_ICON = '◨'
+const CLOSE_ICON = '□'
 const NOTE_LOADING = 'loading'
 const NOTE_EMPTY = 'empty'
 
@@ -65,6 +66,10 @@ const showArchived = atom(
 )
 const isIconHidden = atom(
   { plugin: 'session-tree', key: 'isIconHidden' } as const,
+  false as boolean,
+)
+const isPaneOpen = atom(
+  { plugin: 'session-tree', key: 'isPaneOpen' } as const,
   false as boolean,
 )
 const archivedCount = atom(
@@ -296,7 +301,10 @@ async function resolveLang($: EngineInterface): Promise<Lang> {
 // 패널이 열려 있을 때만 파일을 읽는다. 패널을 열지 않은 세션은 파일을 읽지 않는다.
 async function refreshIfOpen($: EngineInterface) {
   const panes = await $.ui.panes().catch(() => [])
-  if (panes.some(pane => pane.id === PANE)) await refresh($)
+  const isOpen = panes.some(pane => pane.id === PANE)
+  // 모드를 다시 불러와도 패널은 열린 채 남아 있을 수 있어 아이콘 모양도 여기서 맞춘다
+  await update($, isPaneOpen, () => isOpen)
+  if (isOpen) await refresh($)
 }
 
 // 그리는 도중에는 상태를 쓸 수 없어 세션 시작과 명령 실행에서 시작한다
@@ -355,6 +363,7 @@ async function toggleSettings($: EngineInterface) {
 
 async function openPane($: EngineInterface) {
   await $.ui.open({ id: PANE, title: STRINGS[await read($, lang)].title })
+  await update($, isPaneOpen, () => true)
   await refresh($)
 }
 
@@ -363,6 +372,7 @@ async function closeIfOpen($: EngineInterface) {
   const panes = await $.ui.panes()
   if (!panes.some(pane => pane.id === PANE)) return false
   await $.ui.close({ id: PANE })
+  await update($, isPaneOpen, () => false)
 
   return true
 }
@@ -400,28 +410,28 @@ export const register: Register = on => {
     return { text: t.opened }
   })
 
-  // 데스크톱 입력창 위 오른쪽 끝의 흐린 아이콘. 터미널에는 그리지 않는다.
-  on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    const isQuiet =
-      e.surface !== 'desktop' || e.props.hasSurvey || (await read($, isIconHidden))
-    if (isQuiet) return next(e)
-    const { Box, Button } = $.ui.resolve(e)
-    const t = STRINGS[await read($, lang)]
+  // 패널의 X로 닫아도 아이콘이 따라 바뀐다
+  on('ui.close', { id: PANE }, async ($, e, next) => {
+    const result = await next(e)
+    await update($, isPaneOpen, () => false)
+
+    return result
+  })
+
+  // 데스크톱 입력창 아래 상태 줄의 흐린 아이콘. 앱은 이 자리에서 label이 있는 Button만 살려 둔다.
+  on('ui.render', { component: 'SessionMode' }, async ($, e, next) => {
+    if (e.surface !== 'desktop' || (await read($, isIconHidden))) return next(e)
+    const { Button } = $.ui.resolve(e)
 
     return (
-      <Box flexDirection="row" justifyContent="flex-end">
-        <Button
-          key="toggle-pane"
-          label={t.togglePane}
-          plain
-          dimColor
-          onPress={async () => {
-            if (!(await closeIfOpen($))) await openPane($)
-          }}
-        >
-          {PANEL_ICON}
-        </Button>
-      </Box>
+      <Button
+        key="toggle-pane"
+        label={(await read($, isPaneOpen)) ? CLOSE_ICON : OPEN_ICON}
+        dimColor
+        onPress={async () => {
+          if (!(await closeIfOpen($))) await openPane($)
+        }}
+      />
     )
   })
 

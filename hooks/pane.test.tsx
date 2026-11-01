@@ -143,21 +143,14 @@ test('세션 파일을 읽어 그리고, 누르면 그 세션을 연다', async 
   await ui.unmount()
 })
 
-const BAND = {
+const MODE = {
   plugin: 'session-tree',
-  component: 'AbovePrompt',
-  requestId: 'band',
-  props: {
-    hasSurvey: false,
-    isWorking: false,
-    maxRows: 10,
-    bodyColumns: 80,
-    scroll: { offset: 0, bodyRows: 10 },
-    view: {},
-  },
+  component: 'SessionMode',
+  requestId: 'session-mode',
+  props: { modes: [] },
 } as const
 
-test('입력창 위 아이콘으로 패널을 열고 닫는다', async ($, on) => {
+test('입력창 아래 아이콘으로 패널을 열고 닫는다', async ($, on) => {
   const open: string[] = []
   on('ui.open', (_, e) => {
     if (!open.includes(e.id)) open.push(e.id)
@@ -186,14 +179,21 @@ test('입력창 위 아이콘으로 패널을 열고 닫는다', async ($, on) =
     return <Text>아래</Text>
   })
 
-  const ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+  const label = async (surface: { find: typeof ui.find }) =>
+    (await surface.find({ type: 'Button' }))?.props?.label
+
+  const ui = await $.ui.mount({ ...MODE, surface: 'desktop' })
+  expect(await label(ui)).toBe('◨')
   await ui.press({ key: 'toggle-pane' })
   expect(open).toEqual(['session-tree'])
+  expect(await label(ui)).toBe('□')
   await ui.press({ key: 'toggle-pane' })
   expect(open).toEqual([])
+  expect(await label(ui)).toBe('◨')
+
   await ui.unmount()
 
-  const terminal = await $.ui.mount({ ...BAND, surface: 'terminal' })
+  const terminal = await $.ui.mount({ ...MODE, surface: 'terminal' })
   expect(await terminal.find({ type: 'Button' })).toBeFalsy()
   await terminal.unmount()
 
@@ -206,7 +206,7 @@ test('입력창 위 아이콘으로 패널을 열고 닫는다', async ($, on) =
   expect(open).toEqual([])
 })
 
-test('설정에서 입력창 위 아이콘을 숨기고 그 값을 저장한다', async ($, on) => {
+test('설정에서 입력창 아래 아이콘을 숨기고 그 값을 저장한다', async ($, on) => {
   const stored: unknown[] = []
   on('ui.render', ($$, e) => {
     const { Text } = $$.ui.resolve(e)
@@ -220,7 +220,7 @@ test('설정에서 입력창 위 아이콘을 숨기고 그 값을 저장한다'
     return { value: undefined }
   })
 
-  const band = await $.ui.mount({ ...BAND, surface: 'desktop' })
+  const band = await $.ui.mount({ ...MODE, surface: 'desktop' })
   expect(await band.find({ type: 'Button' })).toBeTruthy()
 
   const pane = await $.ui.mount({ ...PANE, surface: 'desktop' })
