@@ -419,19 +419,24 @@ export const register: Register = on => {
   })
 
   // 데스크톱 입력창 아래 상태 줄의 흐린 아이콘. 앱은 이 자리에서 label이 있는 Button만 살려 둔다.
+  // 아래에 깔린 다른 mod가 이 자리에 그린 버튼도 옆에 남긴다.
   on('ui.render', { component: 'SessionMode' }, async ($, e, next) => {
-    if (e.surface !== 'desktop' || (await read($, isIconHidden))) return next(e)
-    const { Button } = $.ui.resolve(e)
+    const below = await next(e)
+    if (e.surface !== 'desktop' || (await read($, isIconHidden))) return below
+    const { Box, Button } = $.ui.resolve(e)
 
     return (
-      <Button
-        key="toggle-pane"
-        label={(await read($, isPaneOpen)) ? CLOSE_ICON : OPEN_ICON}
-        dimColor
-        onPress={async () => {
-          if (!(await closeIfOpen($))) await openPane($)
-        }}
-      />
+      <Box flexDirection="row">
+        <Button
+          key="toggle-pane"
+          label={(await read($, isPaneOpen)) ? CLOSE_ICON : OPEN_ICON}
+          dimColor
+          onPress={async () => {
+            if (!(await closeIfOpen($))) await openPane($)
+          }}
+        />
+        {below}
+      </Box>
     )
   })
 

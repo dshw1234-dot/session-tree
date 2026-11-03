@@ -235,3 +235,17 @@ test('설정에서 입력창 아래 아이콘을 숨기고 그 값을 저장한�
   await pane.unmount()
   await band.unmount()
 })
+
+test('아래에 깔린 다른 mod의 상태 줄 버튼을 지우지 않는다', async ($, on) => {
+  on('ui.render', ($$, e) => {
+    const { Button } = $$.ui.resolve(e)
+
+    return <Button key="rc-toggle" label="RC" onPress={() => {}} />
+  })
+  on('store.get', () => ({ value: undefined }))
+
+  const band = await $.ui.mount({ ...MODE, surface: 'desktop' })
+  expect((await band.find({ type: 'Button', key: 'toggle-pane' }))?.props?.label).toBe('◨')
+  expect((await band.find({ type: 'Button', key: 'rc-toggle' }))?.props?.label).toBe('RC')
+  await band.unmount()
+})
