@@ -4,6 +4,8 @@
 
 A side panel for the Claude desktop app that shows which session started which. The sidebar lists your sessions; Session Tree draws them as a family tree, grouped by folder, so you can see the shape of your work at a glance.
 
+It is a Claude Code mod: it runs inside the desktop app, needs no server, account or API key, and makes no network requests.
+
 ![Session Tree panel showing sessions grouped by folder](docs/screenshot.png)
 
 *The screenshot uses the sample data from `/session-tree demo`.*
