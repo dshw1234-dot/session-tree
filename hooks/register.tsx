@@ -9,7 +9,6 @@ import {
   CLOUD_KEY,
   cloudGroup,
   filterGroup,
-  isNewer,
   parseSession,
   repoName,
   runningIds,
@@ -19,8 +18,6 @@ import type { Session } from './tree'
 const PANE = 'session-tree'
 const SESSIONS_DIR = 'Claude\\claude-code-sessions'
 const LIST_SESSIONS_TOOL = 'mcp__ccd_session_mgmt__list_sessions'
-const LATEST_MANIFEST_URL =
-  'https://raw.githubusercontent.com/dshw1234-dot/session-tree/main/.claude-plugin/plugin.json'
 const NOTE_NO_MATCH = 'no-match'
 const REFRESH_MS = 60_000
 const COLLAPSED_KEY = 'collapsed'
@@ -39,10 +36,6 @@ const groups = atom({ plugin: 'session-tree', key: 'groups' } as const, [], {
 const searchQuery = atom(
   { plugin: 'session-tree', key: 'searchQuery' } as const,
   '' as string,
-)
-const latestVersion = atom(
-  { plugin: 'session-tree', key: 'latestVersion' } as const,
-  null as string | null,
 )
 const collapsed = atom(
   { plugin: 'session-tree', key: 'collapsed' } as const,
@@ -119,7 +112,7 @@ const spaceSvg = (px: number) =>
 
 type Platform = { root: string; sep: string; opener: string[] }
 
-// 데스크톱 앱이 세션 파일을 두는 곳. Windows 밖의 경로와 여는 명령은 실기 확인 전이다.
+// 데스크톱 앱이 세션 파일을 두는 곳. 앱은 Windows와 macOS에만 있다. macOS 경로와 여는 명령은 실기 확인 전이다.
 async function findPlatform($: EngineInterface): Promise<Platform> {
   const appData = await $.env.get('APPDATA')
   if (appData) {
@@ -130,19 +123,12 @@ async function findPlatform($: EngineInterface): Promise<Platform> {
     }
   }
   const home = await $.env.get('HOME')
-  const mac = `${home}/Library/Application Support/${SESSIONS_DIR.replace('\\', '/')}`
-  const isMac = await $.fs.list(mac).then(
-    () => true,
-    () => false,
-  )
 
-  return isMac
-    ? { root: mac, sep: '/', opener: ['open'] }
-    : {
-        root: `${home}/.config/${SESSIONS_DIR.replace('\\', '/')}`,
-        sep: '/',
-        opener: ['xdg-open'],
-      }
+  return {
+    root: `${home}/Library/Application Support/${SESSIONS_DIR.replace('\\', '/')}`,
+    sep: '/',
+    opener: ['open'],
+  }
 }
 
 async function sessionFiles($: EngineInterface, dir: string, sep: string) {
@@ -167,7 +153,6 @@ let lastSessions: Session[] = []
 let lastCloud: Group | null = null
 let lastCliId: string | null = null
 let isDemo = false
-let isUpdateChecked = false
 
 async function loadRepoNames(
   $: EngineInterface,
@@ -219,25 +204,6 @@ async function rebuild($: EngineInterface) {
   )
 }
 
-// 공개 저장소의 plugin.json에서 버전만 읽는다. 아무 정보도 보내지 않고, 실패하면 조용히 넘어간다.
-async function checkForUpdate($: EngineInterface) {
-  if (isUpdateChecked) return
-  isUpdateChecked = true
-  try {
-    const own = JSON.parse(
-      await $.fs.read(`${$.plugin.root}/.claude-plugin/plugin.json`),
-    )
-    const response = await $.http.fetch(LATEST_MANIFEST_URL)
-    if (!response.ok) return
-    const remote = JSON.parse(response.text)
-    if (isNewer(String(remote.version), String(own.version))) {
-      await update($, latestVersion, () => String(remote.version))
-    }
-  } catch {
-    // 다음 세션에 다시 확인한다
-  }
-}
-
 async function refresh($: EngineInterface) {
   if (isDemo) {
     lastSessions = demoSessions()
@@ -274,7 +240,6 @@ async function refresh($: EngineInterface) {
     lastCloud = cloudGroup((await callIfAllowed($, 'ListAgents', {})) ?? '')
     lastCliId = await $.session.id()
     await rebuild($)
-    void checkForUpdate($)
   } catch (err) {
     await update($, note, () => String(err))
   }
@@ -453,7 +418,6 @@ export const register: Register = on => {
     const isHidingIcon = await read($, isIconHidden)
     const isOpen = await read($, isSettingsOpen)
     const query = await read($, searchQuery)
-    const latest = await read($, latestVersion)
     const t = STRINGS[await read($, lang)]
     const noteText =
       message === NOTE_LOADING
@@ -568,7 +532,6 @@ export const register: Register = on => {
           </Box>
           <Button key="settings" label={GEAR} plain onPress={() => toggleSettings($)} />
         </Box>
-        {latest && <Text color={CURRENT}>{t.newVersion(latest)}</Text>}
         {isOpen && (
           <Box
             flexDirection="column"

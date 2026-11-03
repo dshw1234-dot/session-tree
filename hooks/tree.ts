@@ -232,16 +232,3 @@ export function runningIds(listSessionsText: string): Set<string> {
     return new Set()
   }
 }
-
-export function isNewer(latest: string, current: string): boolean {
-  const parts = (version: string) => version.split('.').map(Number)
-  const a = parts(latest)
-  const b = parts(current)
-  for (let i = 0; i < 3; i++) {
-    const diff = (a[i] ?? 0) - (b[i] ?? 0)
-    if (Number.isNaN(diff)) return false
-    if (diff !== 0) return diff > 0
-  }
-
-  return false
-}

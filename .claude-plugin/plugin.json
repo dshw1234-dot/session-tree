@@ -1,7 +1,7 @@
 {
   "name": "session-tree",
   "displayName": "Session Tree",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "A side panel that shows your Claude desktop sessions as a family tree, grouped by folder.",
   "author": {
     "name": "이원찬",

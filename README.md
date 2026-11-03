@@ -55,11 +55,7 @@ This section is also the mod's privacy policy.
 
 **Stores.** Only your settings, on your computer: language, whether archived sessions are shown, whether the icon is hidden, and which folders are collapsed (kept as folder paths). The mod has no server and keeps no other copy of your data.
 
-**Sends.** None of your data. The only network request is one GET per session, while the panel is open, to this fixed address, to check for a new version:
-
-`https://raw.githubusercontent.com/dshw1234-dot/session-tree/main/.claude-plugin/plugin.json`
-
-The mod uses only the `version` field of the answer. It never runs anything it downloads. GitHub receives the request like any other web request, including your IP address.
+**Sends.** Nothing. The mod makes no network requests. For new versions, use the marketplace auto-update described under Install.
 
 **Tools it calls by itself.** While the panel is open, about once a minute, without the model asking, and only if your permission settings already allow them, so that it never opens a permission prompt:
 
@@ -68,7 +64,7 @@ The mod uses only the `version` field of the answer. It never runs anything it d
 
 If either tool isn't allowed, the mod skips it and that information doesn't appear. The answers stay in the panel. They aren't sent anywhere and they don't enter the conversation.
 
-**Programs it starts.** Only when you click a session card, to open that session in the app: `rundll32 url.dll,FileProtocolHandler` on Windows, `open` on macOS, or `xdg-open` on Linux. The only argument is `claude://claude.ai/epitaxy/<session id>`, and the id must be a local session id made of letters, digits and hyphens. The mod starts no other program.
+**Programs it starts.** Only when you click a session card, to open that session in the app: `rundll32 url.dll,FileProtocolHandler` on Windows, or `open` on macOS. The only argument is `claude://claude.ai/epitaxy/<session id>`, and the id must be a local session id made of letters, digits and hyphens. The mod starts no other program.
 
 **Hooks.** `session.start` registers the command and restores your settings. `command.run` answers `/session-tree` by opening or closing the panel. `ui.close` keeps the icon right when you close the panel. `ui.render` draws the panel and the icon under the prompt. The mod doesn't change your prompts, the model's instructions or other tool calls.
 
@@ -76,7 +72,7 @@ Questions and problem reports go to [Issues](https://github.com/dshw1234-dot/ses
 
 ## Limitations
 
-- **Tested on Windows only.** macOS and Linux support is written but has not been run on those systems. Reports are welcome.
+- **Windows and macOS.** The desktop app runs on these two. Tested on Windows only; macOS support is written but has not been run there. Reports are welcome.
 - **It can break when the app updates.** The session files are the app's internal format, not a public API.
 - **Cloud sessions show titles only.** They have no folder, no parent and no click-to-open, because that information isn't available to a mod.
 - **Running status doesn't cover the session you are in,** and it can lag by up to a minute.
@@ -92,7 +88,7 @@ claude plugin test .
 
 ## See also
 
-- [RC Panel](https://github.com/dshw1234-dot/rc-panel): lists the sessions that have Remote Control on and turns them off one by one or all at once. Its `RC` button sits next to ◨ below the prompt.
+- [RC Panel](https://github.com/dshw1234-dot/rc-panel): lists the sessions that have Remote Control on and opens each one so you can turn it off there. Its `RC` button sits next to ◨ below the prompt.
 
 ## License
 

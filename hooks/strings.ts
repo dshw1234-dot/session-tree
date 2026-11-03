@@ -16,7 +16,6 @@ type Strings = {
   search: string
   noMatch: string
   running: string
-  newVersion: (version: string) => string
   loading: string
   empty: string
   readFailed: string
@@ -46,8 +45,6 @@ export const STRINGS: Record<Lang, Strings> = {
     search: '세션 검색',
     noMatch: '검색 결과가 없습니다.',
     running: '실행 중',
-    newVersion: version =>
-      `새 버전 ${version}이 있습니다: claude plugin update session-tree@session-tree`,
     loading: '불러오는 중…',
     empty: '세션이 없습니다.',
     readFailed: '세션 파일을 읽지 못했습니다. Claude 데스크톱 앱이 필요합니다',
@@ -75,8 +72,6 @@ export const STRINGS: Record<Lang, Strings> = {
     search: 'Search sessions',
     noMatch: 'No matching sessions.',
     running: 'running',
-    newVersion: version =>
-      `Version ${version} is available: claude plugin update session-tree@session-tree`,
     loading: 'Loading…',
     empty: 'No sessions.',
     readFailed: 'Could not read the session files. The Claude desktop app is required',

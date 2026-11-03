@@ -40,7 +40,6 @@ declare module 'claude-code' {
       lang: Lang
       isSettingsOpen: boolean
       searchQuery: string
-      latestVersion: string | null
     }
   }
 }

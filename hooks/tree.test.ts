@@ -6,7 +6,6 @@ import {
   filterGroup,
   folderName,
   folderOf,
-  isNewer,
   parseSession,
   repoName,
   runningIds,
@@ -180,13 +179,6 @@ test('즐겨찾기를 읽고, 실행 중인 세션을 도구의 답에서 고른
     ),
   ]).toEqual(['x'])
   expect(runningIds('오류').size).toBe(0)
-})
-
-test('버전은 숫자로 비교한다', () => {
-  expect(isNewer('0.10.0', '0.9.0')).toBe(true)
-  expect(isNewer('0.2.0', '0.2.0')).toBe(false)
-  expect(isNewer('0.1.9', '0.2.0')).toBe(false)
-  expect(isNewer('undefined', '0.2.0')).toBe(false)
 })
 
 test('macOS와 Linux 홈 폴더도 ~로 줄이고, / 경로의 worktree를 원래 프로젝트로 본다', () => {

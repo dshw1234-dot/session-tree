@@ -55,11 +55,7 @@ claude plugin update session-tree@session-tree
 
 **저장하는 것.** 내 컴퓨터에 설정만 저장합니다. 언어, 보관 세션 표시 여부, 아이콘 숨김 여부, 접은 폴더(폴더 경로로 저장)입니다. 이 모드에는 서버가 없고, 그 밖의 데이터 사본을 두지 않습니다.
 
-**보내는 것.** 내 데이터는 보내지 않습니다. 네트워크 요청은 패널이 열려 있을 때 세션마다 한 번, 새 버전을 확인하려고 아래 고정 주소로 보내는 GET 요청뿐입니다.
-
-`https://raw.githubusercontent.com/dshw1234-dot/session-tree/main/.claude-plugin/plugin.json`
-
-응답에서는 `version` 값만 쓰고, 내려받은 것을 실행하지 않습니다. GitHub은 다른 웹 요청과 마찬가지로 IP 주소를 포함한 요청을 받습니다.
+**보내는 것.** 없습니다. 이 모드는 네트워크 요청을 하지 않습니다. 새 버전은 설치 항목에 적은 마켓플레이스 자동 업데이트로 받으세요.
 
 **스스로 부르는 도구.** 패널이 열려 있으면 모델의 요청 없이 약 1분마다 부릅니다. 권한 설정에서 이미 허용된 경우에만 부르므로 권한 창을 띄우지 않습니다.
 
@@ -68,7 +64,7 @@ claude plugin update session-tree@session-tree
 
 허용되지 않은 도구는 건너뛰며, 그 정보는 패널에 나오지 않습니다. 도구의 답은 패널에만 쓰이고, 어디로도 보내지 않으며 대화에도 들어가지 않습니다.
 
-**실행하는 프로그램.** 세션 카드를 눌렀을 때 그 세션을 앱에서 열기 위해서만 실행합니다. Windows는 `rundll32 url.dll,FileProtocolHandler`, macOS는 `open`, Linux는 `xdg-open`입니다. 인수는 `claude://claude.ai/epitaxy/<세션 id>` 하나이고, id는 영문자, 숫자, 하이픈으로 된 로컬 세션 id여야 합니다. 그 밖의 프로그램은 실행하지 않습니다.
+**실행하는 프로그램.** 세션 카드를 눌렀을 때 그 세션을 앱에서 열기 위해서만 실행합니다. Windows는 `rundll32 url.dll,FileProtocolHandler`, macOS는 `open`입니다. 인수는 `claude://claude.ai/epitaxy/<세션 id>` 하나이고, id는 영문자, 숫자, 하이픈으로 된 로컬 세션 id여야 합니다. 그 밖의 프로그램은 실행하지 않습니다.
 
 **훅.** `session.start`는 명령을 등록하고 설정을 복원합니다. `command.run`은 `/session-tree`에 답해 패널을 열거나 닫습니다. `ui.close`는 패널을 닫을 때 아이콘 모양을 맞춥니다. `ui.render`는 패널과 입력창 아래 아이콘을 그립니다. 프롬프트, 모델 지침, 다른 도구 호출은 바꾸지 않습니다.
 
@@ -76,7 +72,7 @@ claude plugin update session-tree@session-tree
 
 ## 한계
 
-- **Windows에서만 시험했습니다.** macOS와 Linux 지원 코드는 있지만 해당 환경에서 실행해 보지 않았습니다. 제보를 환영합니다.
+- **Windows와 macOS.** 데스크톱 앱이 이 둘에서 돌아갑니다. 시험은 Windows에서만 했고, macOS 지원 코드는 그 환경에서 실행해 보지 않았습니다. 제보를 환영합니다.
 - **앱이 업데이트되면 고장 날 수 있습니다.** 세션 파일은 공개 API가 아니라 앱 내부 형식입니다.
 - **클라우드 세션은 제목만 나옵니다.** 모드가 알 수 있는 정보가 아니어서 폴더, 부모 관계, 눌러서 열기를 지원하지 않습니다.
 - **실행 상태에 지금 세션은 나오지 않고,** 최대 1분 늦을 수 있습니다.
@@ -92,7 +88,7 @@ claude plugin test .
 
 ## 함께 쓰면 좋은 mod
 
-- [RC Panel](https://github.com/dshw1234-dot/rc-panel): Remote Control이 켜진 세션을 모아 보여 주고, 하나씩 또는 한 번에 끕니다. 입력창 아래에서 `RC` 버튼이 ◨ 옆에 놓입니다.
+- [RC Panel](https://github.com/dshw1234-dot/rc-panel): Remote Control이 켜진 세션을 모아 보여 주고, 그 세션으로 이동시켜 끌 수 있게 합니다. 입력창 아래에서 `RC` 버튼이 ◨ 옆에 놓입니다.
 
 ## 라이선스
 
