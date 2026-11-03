@@ -90,6 +90,10 @@ claude plugin test .
 
 `hooks/tree.ts`가 나무를 만들고, `hooks/register.tsx`가 패널을 그리며, `hooks/strings.ts`에 두 언어의 문구가 있습니다.
 
+## 함께 쓰면 좋은 mod
+
+- [RC Panel](https://github.com/dshw1234-dot/rc-panel): Remote Control이 켜진 세션을 모아 보여 주고, 하나씩 또는 한 번에 끕니다. 입력창 아래에서 `RC` 버튼이 ◨ 옆에 놓입니다.
+
 ## 라이선스
 
 [MIT](LICENSE)

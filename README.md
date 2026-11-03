@@ -90,6 +90,10 @@ claude plugin test .
 
 `hooks/tree.ts` builds the tree, `hooks/register.tsx` draws the panel and `hooks/strings.ts` holds the text in both languages.
 
+## See also
+
+- [RC Panel](https://github.com/dshw1234-dot/rc-panel): lists the sessions that have Remote Control on and turns them off one by one or all at once. Its `RC` button sits next to ◨ below the prompt.
+
 ## License
 
 [MIT](LICENSE)
